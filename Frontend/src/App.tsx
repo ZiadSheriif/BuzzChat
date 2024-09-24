@@ -1,17 +1,17 @@
-import './App.css'
-import Landing from 'src/components/Auth/Landing/Landing'
-
+import styles from './App.module.css';
+import Landing from 'src/components/Auth/Landing/Landing';
+import Login from 'src/components/Auth/Login/Login';
 
 function App() {
-  
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Group Chat</h1>
+    <div className={styles.container}>
+      <h1>Group Chat</h1>
+      <div className={styles.app}>
         <Landing />
-      </header>
+        <Login />
+      </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
