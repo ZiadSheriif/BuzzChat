@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './Login.module.css';
+import styles from './Login.module.scss';
 
 interface LoginFormProps {
     onLogin: (email: string, password: string) => void;

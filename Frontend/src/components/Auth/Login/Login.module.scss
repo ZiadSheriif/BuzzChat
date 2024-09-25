@@ -7,12 +7,14 @@
   color: #213547;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   min-width: 300px;
-  max-height: 220px;
+  max-width: 500px; /* Adjust width */
+  max-height: 280px; /* Adjust height */
 }
 
 .form div {
   margin-bottom: 1rem;
   display: flex;
+  width: 100%; /* Full width for smaller devices */
   flex-direction: column;
 }
 
@@ -24,16 +26,21 @@
 
 .input {
   display: block;
-  width: 90%;
-  padding: 0.5rem;
+  width: 100%; /* Full width */
+  padding: 0.75rem; /* Increase padding */
   color: #495057;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: white;
+  transition: border-color 0.3s ease; /* Smooth transition on focus */
 
   &:focus {
     outline: none;
     border-color: #007bff;
+  }
+
+  &:hover {
+    border-color: #0056b3; /* Add hover effect */
   }
 }
 
@@ -51,13 +58,14 @@
   color: white;
   font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
 
   &:focus,
   &:focus-visible {
     outline: none;
   }
-}
-
-.button:hover {
-  background-color: #0056b3;
 }
