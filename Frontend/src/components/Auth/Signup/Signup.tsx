@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { signup } from 'src/services/Auth/auth';
+import useAPI from 'src/hooks/useAPI.hook';
 import styles from './Signup.module.scss';
 
 
 
 const Signup: React.FC = () => {
+
+    const { data: signupData, isLoading: signupLoading, isSuccess: signupSuccess, isError: signupError, error: signupErrorText, runQuery: signupRunQuery } = useAPI();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -30,8 +34,7 @@ const Signup: React.FC = () => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 const imageDataUrl = reader.result as string;
-                console.log('username', username, 'email', email, 'password', password, 'image', imageDataUrl);
-
+                signupRunQuery(() => signup(username, email, password, imageDataUrl));
             };
             reader.readAsDataURL(image);
         }
