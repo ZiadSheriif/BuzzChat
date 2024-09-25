@@ -1,4 +1,4 @@
-# Group Chat Backend
+# BuzzChat Backend
 
 This is the backend for the Group Chat application. It is built using Node.js, Express, and MongoDB.
 
@@ -42,7 +42,8 @@ npm start
 ```
 
 ## Project Structure
-group-chat-backend/
+```
+BuzzChat-Backend/
 ├── src/
 │   ├── controllers/
 │   │   └── users-controllers.ts
@@ -57,4 +58,17 @@ group-chat-backend/
 ├── nodemon.json
 ├── package.json
 └── README.md
+```
 
+
+
+### Explanation
+1. **Prerequisites**: Lists the requirements to run the project.
+2. **Installation**: Provides step-by-step instructions to set up the project.
+3. **Running the Server**: Explains how to start the server using `nodemon`.
+4. **Project Structure**: Gives an overview of the project directory structure.
+5. **API Endpoints**: Documents the available API endpoints.
+6. **Contributing**: Provides guidelines for contributing to the project.
+7. **License**: Mentions the project's license.
+
+Feel free to customize this `README.md` file according to your project's specific needs.
