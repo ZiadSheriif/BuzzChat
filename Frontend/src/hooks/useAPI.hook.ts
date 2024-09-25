@@ -1,14 +1,8 @@
 import { useState } from "react";
 
 type Config<T> = {
-    onSuccess: (data: T) => void;
-    onError: (error: unknown) => void;
-};
-
-const noop = () => { };
-const defaultConfig: Config<unknown> = {
-    onSuccess: noop,
-    onError: noop,
+    onSuccess?: (data: T) => void;
+    onError?: (error: unknown) => void;
 };
 
 type State<T> = {
@@ -19,6 +13,11 @@ type State<T> = {
     error: string;
 };
 
+const defaultConfig = {
+    onSuccess: () => { },
+    onError: () => { },
+};
+
 const useAPI = <T>(config: Config<T> = defaultConfig) => {
     const [state, setState] = useState<State<T>>({
         data: null,
@@ -27,35 +26,22 @@ const useAPI = <T>(config: Config<T> = defaultConfig) => {
         isError: false,
         error: "",
     });
-    const { onSuccess, onError } = config;
 
-    const runQuery = (fn: () => Promise<T>) => {
-        if (!fn) return;
-        console.log("Running query");
-        setState((s) => ({ ...s, isLoading: true }));
-        fn()
-            .then((data) => {
-                setState({
-                    data,
-                    isLoading: false,
-                    isSuccess: true,
-                    isError: false,
-                    error: "",
-                });
-                onSuccess(data);
-            })
-            .catch((error) => {
-                setState({
-                    data: null,
-                    isLoading: false,
-                    isSuccess: false,
-                    isError: true,
-                    error: error.message || "Failed to fetch",
-                });
-                onError(error);
-            });
+    const { onSuccess = () => { }, onError = () => { } } = config;
+
+    const runQuery = async (fn: () => Promise<T>) => {
+        try {
+            setState((prev) => ({ ...prev, isLoading: true, isError: false, error: "" }));
+
+            const data = await fn();
+            setState({ data, isLoading: false, isSuccess: true, isError: false, error: "" });
+            onSuccess(data);
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to fetch";
+            setState({ data: null, isLoading: false, isSuccess: false, isError: true, error: errorMessage });
+            onError(error);
+        }
     };
-
 
     return { ...state, runQuery };
 };
