@@ -1,0 +1,47 @@
+.homeContainer {
+    display: flex;
+    justify-content: center;
+    width: 90%;
+    height: 100%;
+  }
+  
+  .headerMessage {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 1rem;
+  }
+  
+  .borderRight {
+    border-right: 1px solid #e0e0e0;
+  }
+  
+  .messageArea {
+    height: 70vh;
+    overflow-y: auto;
+  }
+  
+  .listContainer {
+    padding: 10px;
+  }
+  
+  .chatDivider {
+    margin: 1rem 0;
+  }
+  
+  .messageInputContainer {
+    padding: 20px;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .fabButton {
+    color: #fff;
+    background-color: #007bff;
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+  

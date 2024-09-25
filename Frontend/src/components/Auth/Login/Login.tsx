@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { login } from 'src/services/Auth/auth';
+import useAPI from 'src/hooks/useAPI.hook';
 import styles from './Login.module.scss';
 
-interface LoginFormProps {
-    onLogin: (email: string, password: string) => void;
-}
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
+
+const LoginForm: React.FC = () => {
+
+
+    const { data: loginData, isLoading: loginLoading, isSuccess: loginSuccess, isError: loginError, error: loginErrorText, runQuery: loginRunQuery } = useAPI();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
@@ -29,36 +32,41 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validate()) {
-            onLogin(email, password);
+            loginRunQuery(() => login(email, password));
         }
+
+
     };
 
     return (
-        <form onSubmit={handleSubmit} className={styles.form}>
-            <div>
-                <label htmlFor="email" className={styles.label}>Email:</label>
-                <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={styles.input}
-                />
-                {errors.email && <span className={styles.error}>{errors.email}</span>}
-            </div>
-            <div>
-                <label htmlFor="password" className={styles.label}>Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={styles.input}
-                />
-                {errors.password && <span className={styles.error}>{errors.password}</span>}
-            </div>
-            <button type="submit" className={styles.button}>Login</button>
-        </form>
+        <div>
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <p>Welcome to BuzzChat</p>
+                <div>
+                    <label htmlFor="email" className={styles.label}>Email:</label>
+                    <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={styles.input}
+                    />
+                    {errors.email && <span className={styles.error}>{errors.email}</span>}
+                </div>
+                <div>
+                    <label htmlFor="password" className={styles.label}>Password:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={styles.input}
+                    />
+                    {errors.password && <span className={styles.error}>{errors.password}</span>}
+                </div>
+                <button type="submit" className={styles.button}>Login</button>
+            </form>
+        </div >
     );
 };
 
