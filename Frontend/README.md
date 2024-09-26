@@ -1,50 +1,70 @@
-# React + TypeScript + Vite
+Redux is a state management library for JavaScript applications, commonly used with React. It helps manage the state of an application in a predictable way by using a single source of truth, called the "store". Here's a breakdown of how Redux works and an explanation of each hook used in the provided code:
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### How Redux Works
+1. *Store*: The single source of truth that holds the state of your application.
+2. *Actions*: Plain objects that describe what happened or what should change in the state.
+3. *Reducers*: Functions that take the current state and an action, and return a new state.
+4. *Dispatch*: A method to send actions to the store.
+5. *Selectors*: Functions to get specific pieces of state from the store.
 
-Currently, two official plugins are available:
+### Explanation of Each Hook in the Provided Code
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. *createStore*
+ ```  typescript
+   import { createStore } from 'redux';
+ ```
+ 
+   - Creates a Redux store that holds the state tree of your application. Only one store should exist in a Redux app.
 
-## Expanding the ESLint configuration
+2. *combineReducers*
+  ``` typescript
+   import { combineReducers } from 'redux';
+  ```
+   - Combines multiple reducer functions into a single reducer function. The rootReducer maps reducer functions to slices of state.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+3. *Provider*
+ ```  typescript
+   import { Provider } from 'react-redux';
+   ```
+   - Makes the Redux store available to any nested components that have been wrapped in the connect function. This is essential for integrating Redux with React.
 
-- Configure the top-level `parserOptions` property like this:
+4. *createRoot*
+  ``` typescript
+   import { createRoot } from 'react-dom/client';
+ ```  
+   - Initialises the root of the React application. This is part of React and not Redux, used to render the React component tree.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Code Breakdown
+``` typescript
+import { createRoot } from 'react-dom/client'
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
+import App from './App.tsx'
+import authReducer from './redux/auth-reducer.ts'
+import './index.scss'
+
+// Combine reducers to form the root reducer
+const rootReducer = combineReducers({ auth: authReducer })
+
+// Create the Redux store with the root reducer
+const store = createStore(rootReducer)
+
+// Render the React component tree, providing the Redux store
+createRoot(document.getElementById('root')!).render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+)
+
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Explanation of Each Line
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- *createRoot(document.getElementById('root')!)*: Initializes the root of the React application.
+- *render(...)*: Renders the React component tree.
+- *<Provider store={store}>*: Makes the Redux store available to the App component and its descendants.
+- *<App />*: The main React component of the application.
+- *combineReducers({ auth: authReducer })*: Combines multiple reducers into a single root reducer.
+- *createStore(rootReducer)*: Creates the Redux store with the root reducer.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+This setup initializes Redux in a React application, sets up the Redux store, and connects it to the React component tree using the ***Provider*** component.

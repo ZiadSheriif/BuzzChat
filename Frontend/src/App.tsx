@@ -1,17 +1,26 @@
-import './App.css'
-import Landing from 'src/components/Auth/Landing/Landing'
+import Auth from 'src/pages/Auth/Auth';
+import Home from 'src/pages/Home/Home';
+
+import { useSelector } from 'react-redux';
+import React from 'react';
 
 
-function App() {
-  
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Group Chat</h1>
-        <Landing />
-      </header>
-    </div>
-  )
+interface AuthState {
+  isLogged: boolean;
+  id: string | null;
+  username: string | null;
+  token: string | null;
+  image: string | null;
 }
 
-export default App
+interface RootState {
+  auth: AuthState;
+}
+
+const App: React.FC = () => {
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isLogged);
+
+  return isAuthenticated ? <Home /> : <Auth />;
+};
+
+export default App;

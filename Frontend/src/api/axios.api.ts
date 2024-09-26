@@ -1,12 +1,14 @@
 import axios from 'axios';
 
-export const baseURL = 'http://localhost:5000';
+export const baseURL = 'http://localhost:4000';
 
 
 const API = axios.create({
     baseURL,
     headers: {
-        'ngrok-skip-browser-warning': '69420'
+        'ngrok-skip-browser-warning': '69420',
+        "Content-Language": "en-US",
+        "Content-Type": "application/json",
     }
 });
 
