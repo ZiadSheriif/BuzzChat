@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { login } from 'src/services/Auth/auth';
+import { useDispatch } from 'react-redux';
 import useAPI from 'src/hooks/useAPI.hook';
 import styles from './Login.module.scss';
 
@@ -9,6 +10,7 @@ const LoginForm: React.FC = () => {
 
 
     const { data: loginData, isLoading: loginLoading, isSuccess: loginSuccess, isError: loginError, error: loginErrorText, runQuery: loginRunQuery } = useAPI();
+    const dispatch = useDispatch();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
@@ -34,9 +36,17 @@ const LoginForm: React.FC = () => {
         if (validate()) {
             loginRunQuery(() => login(email, password));
         }
-
-
     };
+
+    useEffect(() => {
+        if (loginSuccess && loginData) {
+            dispatch({ type: 'LOGIN', payload: loginData });
+            console.log(loginData);
+        }
+        else if (loginError) {
+            setErrors({ email: loginErrorText });
+        }
+    }, [loginSuccess, loginData, loginError, loginErrorText, dispatch]);
 
     return (
         <div>

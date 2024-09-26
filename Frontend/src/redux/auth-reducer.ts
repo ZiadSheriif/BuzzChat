@@ -1,42 +1,28 @@
 type UserState = {
-    id: string | null,
-    email: string | null,
-    isLogged: boolean,
-    image: string | null,
-    token: string | null,
+    id: string | null;
+    email: string | null;
+    isLogged: boolean;
+    image: string | null;
+    token: string | null;
 };
-
 
 type UserAction = {
-    type: string,
-    payload: UserState,
+    type: string;
+    payload?: UserState;
 };
-
 
 const initialState: UserState = { id: null, email: null, isLogged: false, image: null, token: null };
 
-
 const authReducer = (state = initialState, action: UserAction): UserState => {
-
     switch (action.type) {
         case 'LOGIN':
+        case 'GUEST': {
             return {
                 ...state,
-                id: action.payload.id,
-                email: action.payload.email,
-                isLogged: action.payload.isLogged,
-                image: action.payload.image,
-                token: action.payload.token,
+                ...action.payload,
+                isLogged: action.type === 'LOGIN' ? true : state.isLogged,
             };
-        case 'GUEST':
-            return {
-                ...state,
-                id: action.payload.id,
-                email: action.payload.email,
-                isLogged: true,
-                image: action.payload.image,
-                token: null,
-            };
+        }
         case 'LOGOUT':
             return {
                 ...state,
@@ -46,12 +32,9 @@ const authReducer = (state = initialState, action: UserAction): UserState => {
                 image: null,
                 token: null,
             };
-
-
         default:
             return state;
     }
-}
-
+};
 
 export default authReducer;
