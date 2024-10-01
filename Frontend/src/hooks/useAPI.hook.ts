@@ -37,7 +37,8 @@ const useAPI = <T>(config: Config<T> = defaultConfig) => {
             setState({ data, isLoading: false, isSuccess: true, isError: false, error: "" });
             onSuccess(data);
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : "Failed to fetch";
+        console.log("error", error);
+            const errorMessage = error instanceof Error ? error?.response?.data.message : "Failed to fetch";
             setState({ data: null, isLoading: false, isSuccess: false, isError: true, error: errorMessage });
             onError(error);
         }

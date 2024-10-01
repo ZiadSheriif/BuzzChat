@@ -1,0 +1,11 @@
+.groupChatForm {
+    margin: 15px;
+    button {
+        background-color: #007bff;
+        color: white;
+        &:hover {
+            background-color: #0056b3;
+        }
+        
+    }
+}

@@ -1,0 +1,27 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    background-color: #007bff;
+    padding: 10px;
+    color: white;
+
+    .title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        left: 50%;
+        position: relative;
+        text-shadow: 2px 2px 4px #000000;
+       font-style: italic;
+    }
+
+    nav button {
+        color: white;
+        margin-left: 10px;
+        font-size: 1rem;
+        font-style: italic;
+        &:hover {
+            color: #f0f0f0;
+            background-color: #0056b3;
+        }
+    }
+}

@@ -1,37 +1,38 @@
-type UserState = {
-    id: string | null;
-    email: string | null;
-    isLogged: boolean;
-    image: string | null;
-    token: string | null;
+import { UserState, UserAction } from './types';
+import { LOGIN, LOGOUT } from './auth-actions';
+
+const initialState: UserState = {
+    id: null,
+    email: null,
+    isLogged: false,
+    image: null,
+    token: null,
 };
 
-type UserAction = {
-    type: string;
-    payload?: UserState;
+const loadUserFromLocalStorage = (): UserState => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : initialState;
 };
 
-const initialState: UserState = { id: null, email: null, isLogged: false, image: null, token: null };
-
-const authReducer = (state = initialState, action: UserAction): UserState => {
+const authReducer = (state = loadUserFromLocalStorage(), action: UserAction): UserState => {
     switch (action.type) {
-        case 'LOGIN':
-        case 'GUEST': {
-            return {
+        case LOGIN: {
+            const updatedLoginState = {
                 ...state,
                 ...action.payload,
-                isLogged: action.type === 'LOGIN' ? true : state.isLogged,
+                isLogged: true,
+            };
+            localStorage.setItem('user', JSON.stringify(updatedLoginState));
+            return updatedLoginState;
+        }
+
+        case LOGOUT: {
+            localStorage.removeItem('user');
+            return {
+                ...initialState,
             };
         }
-        case 'LOGOUT':
-            return {
-                ...state,
-                id: null,
-                email: null,
-                isLogged: false,
-                image: null,
-                token: null,
-            };
+
         default:
             return state;
     }

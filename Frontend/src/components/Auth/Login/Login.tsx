@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { login } from 'src/services/Auth/auth';
 import { useDispatch } from 'react-redux';
 import useAPI from 'src/hooks/useAPI.hook';
+import { loginUser } from 'src/redux/auth-actions.ts';
+import InProgress from 'src/components/Helpers/InProgress/InProgress';
 import styles from './Login.module.scss';
-
 
 
 const LoginForm: React.FC = () => {
@@ -40,7 +41,7 @@ const LoginForm: React.FC = () => {
 
     useEffect(() => {
         if (loginSuccess && loginData) {
-            dispatch({ type: 'LOGIN', payload: loginData });
+            dispatch(loginUser(loginData));
             console.log(loginData);
         }
         else if (loginError) {
@@ -74,7 +75,7 @@ const LoginForm: React.FC = () => {
                     />
                     {errors.password && <span className={styles.error}>{errors.password}</span>}
                 </div>
-                <button type="submit" className={styles.button}>Login</button>
+                {loginLoading ? <InProgress /> : <button type="submit" className={styles.button}>Login</button>}
             </form>
         </div >
     );
