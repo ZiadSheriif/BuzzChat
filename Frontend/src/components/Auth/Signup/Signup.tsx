@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { signup } from 'src/services/Auth/auth';
+import { loginUser } from 'src/redux/auth-actions.ts';
+import { useDispatch } from 'react-redux';
 import useAPI from 'src/hooks/useAPI.hook';
+import InProgress from 'src/components/Helpers/InProgress/InProgress';
 import styles from './Signup.module.scss';
 
 
@@ -8,6 +11,7 @@ import styles from './Signup.module.scss';
 const Signup: React.FC = () => {
 
     const { data: signupData, isLoading: signupLoading, isSuccess: signupSuccess, isError: signupError, error: signupErrorText, runQuery: signupRunQuery } = useAPI();
+    const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -44,6 +48,17 @@ const Signup: React.FC = () => {
             setImage(e.target.files[0]);
         }
     };
+
+    useEffect(() => {
+        if (signupSuccess && signupData) {
+            dispatch(loginUser(signupData));
+            console.log(signupData);
+
+        }
+        else if (signupError) {
+            setErrors({ email: signupErrorText });
+        }
+    }, [signupSuccess, signupData, signupError, signupErrorText]);
 
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -95,8 +110,8 @@ const Signup: React.FC = () => {
                 {errors.image && <span className={styles.error}>{errors.image}</span>}
             </div>
 
-            <button type="submit" className={styles.button}>Sign Up</button>
-        </form>
+            {signupLoading ? <InProgress /> : <button type="submit" className={styles.button}>Sign Up</button>
+            }        </form>
     );
 };
 

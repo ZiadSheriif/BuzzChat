@@ -49,7 +49,6 @@ const Home: React.FC = () => {
 
     return (
         <div>
-            <Header />
             <Grid container>
                 <Grid item xs={12} className={styles.chatContainer}>
                     <Typography variant="h5" className={styles.headerMessage}>Chat</Typography>

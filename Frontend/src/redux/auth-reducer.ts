@@ -1,7 +1,6 @@
 import { UserState, UserAction } from './types';
-import {LOGIN, LOGOUT} from './auth-actions';
+import { LOGIN, LOGOUT } from './auth-actions';
 
-// Initial state for the auth reducer
 const initialState: UserState = {
     id: null,
     email: null,
