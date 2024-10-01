@@ -3,7 +3,7 @@ import { login } from 'src/services/Auth/auth';
 import { useDispatch } from 'react-redux';
 import useAPI from 'src/hooks/useAPI.hook';
 import styles from './Login.module.scss';
-
+import { loginUser } from 'src/redux/auth-actions.ts';
 
 
 const LoginForm: React.FC = () => {
@@ -40,7 +40,7 @@ const LoginForm: React.FC = () => {
 
     useEffect(() => {
         if (loginSuccess && loginData) {
-            dispatch({ type: 'LOGIN', payload: loginData });
+            dispatch(loginUser(loginData));
             console.log(loginData);
         }
         else if (loginError) {
