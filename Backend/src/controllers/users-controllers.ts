@@ -23,7 +23,7 @@ const login = async (req: any, res: any, next: any) => {
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: 'Invalid Password' });
         }
 
 
@@ -35,8 +35,7 @@ const login = async (req: any, res: any, next: any) => {
 };
 
 const signup = async (req: any, res: any, next: any) => {
-    const { username, email, password } = req.body;
-    console.log(req.body);
+    const { username, email, password, image } = req.body;
 
     const errors = validationResult(req);
 
@@ -52,7 +51,7 @@ const signup = async (req: any, res: any, next: any) => {
         }
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const newUser = new User({ username, email, password: hashedPassword, image: 'https://www.w3schools.com/howto/img_avatar.png' });
+        const newUser = new User({ username, email, password: hashedPassword, image: image || 'https://www.w3schools.com/howto/img_avatar.png' });
 
         await newUser.save();
 
