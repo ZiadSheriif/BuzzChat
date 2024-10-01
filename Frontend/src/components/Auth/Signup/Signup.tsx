@@ -22,7 +22,7 @@ const Signup: React.FC = () => {
         else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Email is invalid';
         if (!password) newErrors.password = 'Password is required';
         else if (password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-        if (!image) newErrors.image = 'Image is required';
+        // if (!image) newErrors.image = 'Image is required';
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -30,13 +30,12 @@ const Signup: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (validate() && image) {
+        if (validate()) {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                const imageDataUrl = reader.result as string;
-                signupRunQuery(() => signup(username, email, password, imageDataUrl));
-            };
-            reader.readAsDataURL(image);
+            const imageDataUrl = reader.result as string || undefined;
+            signupRunQuery(() => signup(username, email, password, imageDataUrl));
+
+            if (image) reader.readAsDataURL(image);
         }
     };
 
