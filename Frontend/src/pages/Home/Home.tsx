@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -11,8 +11,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Fab from '@material-ui/core/Fab';
 import SendIcon from '@material-ui/icons/Send';
-
-import Header from 'src/layouts/Header/Header';
+import { getGroups } from 'src/services/Chat/groups';
+import { getGroupDetails } from 'src/services/Chat/groups';
+import useAPI from 'src/hooks/useAPI.hook';
 import GroupChatForm from 'src/components/Side/GroupChatForm/GroupChatForm';
 import styles from './Home.module.scss';
 
@@ -23,19 +24,17 @@ const users = [
     { id: 3, name: 'Cindy Baker', avatar: 'https://material-ui.com/static/images/avatar/2.jpg', online: false },
 ];
 
-const groups = [
-    { id: 1, name: 'Family Group', avatar: 'https://material-ui.com/static/images/avatar/5.jpg' },
-    { id: 2, name: 'Work Group', avatar: 'https://material-ui.com/static/images/avatar/6.jpg' },
-];
 
 
 const Home: React.FC = () => {
-
+    const { data: groupsData, isLoading: groupsLoading, isSuccess: groupsSuccess, isError: groupsError, error: groupsErrorText, runQuery: groupsRunQuery } = useAPI();
+    const { data: groupDetailsData, isLoading: groupDetailsLoading, isSuccess: groupDetailsSuccess, isError: groupDetailsError, error: groupDetailsErrorText, runQuery: groupDetailsRunQuery } = useAPI();
     const [selectedChat, setSelectedChat] = useState<{ type: 'private' | 'group'; id: number } | null>(null);
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState<string[]>([]);
 
     const handleSelectChat = (type: 'private' | 'group', id: number) => {
+        groupDetailsRunQuery(() => getGroupDetails(id));
         setSelectedChat({ type, id });
     };
 
@@ -46,6 +45,16 @@ const Home: React.FC = () => {
             setMessage('');
         }
     };
+
+    useEffect(() => {
+        groupsRunQuery(getGroups);
+    }, []);
+
+    useEffect(() => {
+        if (groupDetailsSuccess && groupDetailsData) {
+            console.log(groupDetailsData);
+        }
+    }, [groupDetailsSuccess, groupDetailsData]);
 
     return (
         <div>
@@ -78,12 +87,12 @@ const Home: React.FC = () => {
                     <Divider className={styles.chatDivider} />
                     <Typography variant="h6" className={styles.sectionTitle}>Groups</Typography>
                     <List>
-                        {groups.map((group) => (
-                            <ListItem button key={group.id} onClick={() => handleSelectChat('group', group.id)}>
+                        {groupsData?.groups?.map((group) => (
+                            <ListItem button key={group._id} onClick={() => handleSelectChat('group', group._id)}>
                                 <ListItemIcon>
-                                    <Avatar alt={group.name} src={group.avatar} className={styles.avatar} />
+                                    <Avatar alt={group.avatar} src={group.avatar} className={styles.avatar} />
                                 </ListItemIcon>
-                                <ListItemText primary={group.name} />
+                                <ListItemText primary={group.title} />
                             </ListItem>
                         ))}
                     </List>
