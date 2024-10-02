@@ -1,0 +1,56 @@
+.profileContainer {
+    padding: 20px;
+}
+
+.header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profileInfo {
+    text-align: center;
+
+    .paper {
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .avatar {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 20px;
+    }
+
+    .username {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .email,
+    .bio {
+        color: #777;
+        margin-bottom: 10px;
+    }
+}
+
+.settingsSection {
+    .paper {
+        padding: 20px;
+    }
+
+    .divider {
+        margin: 10px 0;
+    }
+}
+
+.recentActivity {
+    .paper {
+        padding: 20px;
+    }
+
+    .divider {
+        margin-bottom: 10px;
+    }
+}

@@ -1,6 +1,7 @@
 export type UserState = {
-    id: string | null;
+    userId: string | null;
     email: string | null;
+    username: string | null;
     isLogged: boolean;
     image: string | null;
     token: string | null;

@@ -2,8 +2,9 @@ import { UserState, UserAction } from './types';
 import { LOGIN, LOGOUT, GUEST } from './auth-actions';
 
 const initialState: UserState = {
-    id: null,
+    userId: null,
     email: null,
+    username: null,
     isLogged: false,
     image: null,
     token: null,

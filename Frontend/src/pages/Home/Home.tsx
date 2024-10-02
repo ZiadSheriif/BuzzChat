@@ -15,33 +15,33 @@ import { getGroups } from 'src/services/Chat/groups';
 import { getGroupDetails } from 'src/services/Chat/groups';
 import useAPI from 'src/hooks/useAPI.hook';
 import GroupChatForm from 'src/components/Side/GroupChatForm/GroupChatForm';
+import { RootState } from 'src/redux/types';
+import { useSelector } from 'react-redux';
 import styles from './Home.module.scss';
 
-
-const users = [
-    { id: 1, name: 'John Wick', avatar: 'https://material-ui.com/static/images/avatar/1.jpg', online: true },
-    { id: 2, name: 'Alice', avatar: 'https://material-ui.com/static/images/avatar/3.jpg', online: false },
-    { id: 3, name: 'Cindy Baker', avatar: 'https://material-ui.com/static/images/avatar/2.jpg', online: false },
-];
-
-
-
 const Home: React.FC = () => {
-    const { data: groupsData, isLoading: groupsLoading, isSuccess: groupsSuccess, isError: groupsError, error: groupsErrorText, runQuery: groupsRunQuery } = useAPI();
-    const { data: groupDetailsData, isLoading: groupDetailsLoading, isSuccess: groupDetailsSuccess, isError: groupDetailsError, error: groupDetailsErrorText, runQuery: groupDetailsRunQuery } = useAPI();
+    const { data: groupsData, runQuery: groupsRunQuery } = useAPI();
+    const { data: groupDetailsData, runQuery: groupDetailsRunQuery } = useAPI();
+    const username = useSelector((state: RootState) => state.auth.username);
     const [selectedChat, setSelectedChat] = useState<{ type: 'private' | 'group'; id: number } | null>(null);
     const [message, setMessage] = useState('');
-    const [chatMessages, setChatMessages] = useState<string[]>([]);
+    const [chatMessages, setChatMessages] = useState<any[]>([]);
 
     const handleSelectChat = (type: 'private' | 'group', id: number) => {
-        groupDetailsRunQuery(() => getGroupDetails(id));
+        if (type === 'group') {
+            groupDetailsRunQuery(() => getGroupDetails(id));
+        }
         setSelectedChat({ type, id });
     };
 
-
     const handleSendMessage = () => {
         if (message.trim() !== '') {
-            setChatMessages((prevMessages) => [...prevMessages, message]);
+            const newMessage = {
+                username: username, 
+                text: message,
+                date: new Date().toISOString(),
+            };
+            setChatMessages((prevMessages) => [...prevMessages, newMessage]);
             setMessage('');
         }
     };
@@ -51,10 +51,10 @@ const Home: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (groupDetailsSuccess && groupDetailsData) {
-            console.log(groupDetailsData);
+        if (groupDetailsData) {
+            setChatMessages(groupDetailsData.group.messages);
         }
-    }, [groupDetailsSuccess, groupDetailsData]);
+    }, [groupDetailsData]);
 
     return (
         <div>
@@ -71,63 +71,58 @@ const Home: React.FC = () => {
                         <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth />
                     </Grid>
                     <Divider className={styles.chatDivider} />
-                    <Typography variant="h6" className={styles.sectionTitle}>Contacts</Typography>
-
-                    <List>
-                        {users.map((user) => (
-                            <ListItem button key={user.id} onClick={() => handleSelectChat('private', user.id)}>
-                                <ListItemIcon>
-                                    <Avatar alt={user.name} src={user.avatar} className={styles.avatar} />
-                                </ListItemIcon>
-                                <ListItemText primary={user.name} />
-                                <ListItemText secondary={user.online ? 'online' : ''} align="right" />
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Divider className={styles.chatDivider} />
                     <Typography variant="h6" className={styles.sectionTitle}>Groups</Typography>
                     <List>
-                        {groupsData?.groups?.map((group) => (
+                        {groupsData?.groups?.map((group: any) => (
                             <ListItem button key={group._id} onClick={() => handleSelectChat('group', group._id)}>
                                 <ListItemIcon>
-                                    <Avatar alt={group.avatar} src={group.avatar} className={styles.avatar} />
+                                    <Avatar alt={group.title} src={group.avatar} className={styles.avatar} />
                                 </ListItemIcon>
                                 <ListItemText primary={group.title} />
                             </ListItem>
                         ))}
                     </List>
-
+                    <Divider className={styles.chatDivider} />
+                    <Typography variant="h6" className={styles.sectionTitle}>Members</Typography>
+                    <List>
+                        {groupDetailsData?.group?.members.map((member: any) => (
+                            <ListItem key={member._id}>
+                                <ListItemIcon>
+                                    <Avatar alt={member.username} src={member.image} className={styles.avatar} />
+                                </ListItemIcon>
+                                <ListItemText primary={member.username} />
+                            </ListItem>
+                        ))}
+                    </List>
                 </Grid>
                 <Grid item xs={9}>
                     <List className={styles.messageArea}>
-                        <ListItem key="1">
-                            <Grid container>
-                                <Grid item xs={12}>
-                                    <ListItemText align="right" primary="Hey man, What's up ?" />
+                        {chatMessages.map((msg: any, index) => (
+                            <ListItem key={index}>
+                                <Grid container>
+                                    <Grid item xs={12}>
+                                        <ListItemText
+                                            primary={msg.text}
+                                            secondary={new Date(msg.date).toLocaleTimeString()}
+                                            align={msg.username === username ? 'right' : 'left'}
+                                        />
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <ListItemText align="right" secondary="09:30" />
-                                </Grid>
-                            </Grid>
-                        </ListItem>
-                        <ListItem key="2">
-                            <Grid container>
-                                <Grid item xs={12}>
-                                    <ListItemText primary="Hey, I am good! What about you ?" />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <ListItemText secondary="09:31" />
-                                </Grid>
-                            </Grid>
-                        </ListItem>
+                            </ListItem>
+                        ))}
                     </List>
                     <Divider className={styles.chatDivider} />
                     <Grid container className={styles.messageInputContainer}>
                         <Grid item xs={11}>
-                            <TextField id="outlined-basic-email" label="Type Something" fullWidth />
+                            <TextField
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                label="Type Something"
+                                fullWidth
+                            />
                         </Grid>
                         <Grid item xs={1} align="right">
-                            <Fab color="primary" aria-label="send" className={styles.fabButton}>
+                            <Fab color="primary" aria-label="send" className={styles.fabButton} onClick={handleSendMessage}>
                                 <SendIcon />
                             </Fab>
                         </Grid>

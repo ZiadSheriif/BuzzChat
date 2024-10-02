@@ -26,7 +26,7 @@ const login = async (req: any, res: any, next: any) => {
 
 
         let token = await createToken(user);
-        res.status(200).json({ token: token, userId: user.id, username: user.username, image: user.image });
+        res.status(200).json({ token: token, userId: user.id, email: user.email, username: user.username, image: user.image });
     } catch (err) {
         res.status(500).json({ message: 'Something went wrong' });
     }
