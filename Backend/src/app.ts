@@ -15,8 +15,10 @@ app.use(bodyParser.text({ limit: '200mb' }));
 connectDB();
 // Routes
 const usersRoute = require('./routes/users-route');
+const messagesRoute = require('./routes/messages-route');
 
 app.use('/api/users', usersRoute);
+app.use('/api/messages', messagesRoute);
 
 app.get('/', (req: any, res: any) => {
     res.send('Hello World');
