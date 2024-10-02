@@ -1,16 +1,14 @@
-import mongoose from "mongoose";
-
 const Message = require('../models/message');
 const Group = require('../models/group');
 const User = require('../models/user');
 
 
 const getMessages = async (req: any, res: any, next: any) => {
-    const groupId = req.params.groupId;
+    const { groupId } = req.params;
 
     try {
-        const messages = await Message.find({ groupId: groupId });
-        res.status(200).json({ messages: messages });
+        const group = await Group.findById(groupId).populate('messages');
+        res.status(200).json({ messages: group.messages });
     } catch (err) {
         res.status(500).json({ message: 'Something went wrong' });
     }
@@ -53,7 +51,3 @@ const createMessage = async (req: any, res: any, next: any) => {
     }
 }
 export { getMessages, createMessage };
-
-
-// testing in postman with the following data near to real data:
-// { "username": "test", "image": "https://www.w3schools.com/howto/img_avatar.png", "text": "test message", "group": "5f9b3b3b3b3b3b3b3b3b3b3b", "date": "2020-10-30T10:00:00.000Z" }

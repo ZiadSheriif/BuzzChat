@@ -64,22 +64,22 @@ const signup = async (req: any, res: any, next: any) => {
 
 const guest = async (req: any, res: any, next: any) => {
     const { username, image } = req.body;
-    
+
     const newRandomUser = 'Guest' + Math.floor(Math.random() * 100000);
     const randomAvatar = 'https://www.w3schools.com/howto/img_avatar.png';
-    
-    
+
+
     if (!username && !image) {
         return res.status(400).json({ message: 'Invalid input' });
     }
-    
 
-    const newGuest = new User({ username: newRandomUser , image: image || randomAvatar });
+
+    const newGuest = new User({ username: newRandomUser, image: image || randomAvatar });
 
     try {
         await newGuest.save();
     } catch (err) {
-        res.status(500).json({ message:'Guest user could not be created' });
+        res.status(500).json({ message: 'Guest user could not be created' });
         console.log(err);
         return;
     }

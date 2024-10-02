@@ -16,9 +16,11 @@ connectDB();
 // Routes
 const usersRoute = require('./routes/users-route');
 const messagesRoute = require('./routes/messages-route');
+const groupsRoute = require('./routes/groups-route');
 
 app.use('/api/users', usersRoute);
 app.use('/api/messages', messagesRoute);
+app.use('/api/groups', groupsRoute);
 
 app.get('/', (req: any, res: any) => {
     res.send('Hello World');
