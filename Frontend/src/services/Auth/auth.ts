@@ -17,3 +17,11 @@ export const signup = async (username: string, email: string, password: string, 
         requestConfig: { data: dataObj }
     });
 }
+
+export const loginGuest = async (username: string, image?: string) => {
+    return await baseAPI({
+        method: 'POST',
+        url: '/api/users/guest',
+        requestConfig: { data: { username, image } }
+    });
+}

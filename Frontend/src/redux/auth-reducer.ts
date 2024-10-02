@@ -1,5 +1,5 @@
 import { UserState, UserAction } from './types';
-import { LOGIN, LOGOUT } from './auth-actions';
+import { LOGIN, LOGOUT, GUEST } from './auth-actions';
 
 const initialState: UserState = {
     id: null,
@@ -24,6 +24,17 @@ const authReducer = (state = loadUserFromLocalStorage(), action: UserAction): Us
             };
             localStorage.setItem('user', JSON.stringify(updatedLoginState));
             return updatedLoginState;
+        }
+
+        case GUEST: {
+            const updatedGuestState = {
+                ...state,
+                isLogged: false,
+                token: null,
+                email: null,
+            };
+            localStorage.setItem('user', JSON.stringify(updatedGuestState));
+            return updatedGuestState;
         }
 
         case LOGOUT: {
