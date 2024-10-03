@@ -30,14 +30,14 @@ const Home: React.FC = () => {
     const [chatMessages, setChatMessages] = useState<any[]>([]);
 
     const messagesEndRef = useRef<null | HTMLDivElement>(null);
-
+    let pollingInterval: NodeJS.Timeout;
 
     const handleSelectChat = (type: 'private' | 'group', id: number) => {
         if (type === 'group') {
             groupDetailsRunQuery(() => getGroupDetails(id));
+            startPolling(id);
         }
         setSelectedChat({ type, id });
-
     };
 
     const handleSendMessage = () => {
@@ -50,8 +50,8 @@ const Home: React.FC = () => {
             };
             setChatMessages((prevMessages) => [...prevMessages, newMessage]);
             setMessage('');
+            handleCreateMessage(message);
         }
-        handleCreateMessage(message);
     };
 
     const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -72,8 +72,15 @@ const Home: React.FC = () => {
     useEffect(() => {
         if (groupDetailsData) {
             setChatMessages(groupDetailsData.group.messages);
+            scrollToBottom();
         }
     }, [groupDetailsData]);
+
+    const startPolling = (id: number) => {
+        pollingInterval = setInterval(() => {
+            // groupDetailsRunQuery(() => getGroupDetails(id));
+        }, 3000);
+    };
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -82,8 +89,15 @@ const Home: React.FC = () => {
     };
 
     useEffect(() => {
+        return () => {
+            clearInterval(pollingInterval); // Clear interval on component unmount or group change
+        };
+    }, [selectedChat]);
+
+    useEffect(() => {
         scrollToBottom();
     }, [chatMessages]);
+
 
 
     return (
@@ -117,7 +131,6 @@ const Home: React.FC = () => {
                             </ListItem>
                         ))}
                     </List>
-
                     <Divider className={styles.chatDivider} />
                     <Typography variant="h6" className={styles.sectionTitle}>Members</Typography>
                     <List>
