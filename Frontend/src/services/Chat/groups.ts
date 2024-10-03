@@ -13,3 +13,12 @@ export const getGroupDetails = async (groupId: string) => {
         url: `/api/groups/${groupId}`
     });
 }
+
+export const createGroup = async (group: { title: string, description: string, avatar?: string }) => {
+    console.log('Group:', group);
+    return await baseAPI({
+        method: 'POST',
+        url: '/api/groups/create',
+        requestConfig: { data: group }
+    });
+}

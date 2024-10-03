@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -29,11 +29,15 @@ const Home: React.FC = () => {
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState<any[]>([]);
 
+    const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+
     const handleSelectChat = (type: 'private' | 'group', id: number) => {
         if (type === 'group') {
             groupDetailsRunQuery(() => getGroupDetails(id));
         }
         setSelectedChat({ type, id });
+
     };
 
     const handleSendMessage = () => {
@@ -71,6 +75,17 @@ const Home: React.FC = () => {
         }
     }, [groupDetailsData]);
 
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [chatMessages]);
+
+
     return (
         <div>
             <Grid container>
@@ -89,7 +104,12 @@ const Home: React.FC = () => {
                     <Typography variant="h6" className={styles.sectionTitle}>Groups</Typography>
                     <List>
                         {groupsData?.groups?.map((group: any) => (
-                            <ListItem button key={group._id} onClick={() => handleSelectChat('group', group._id)}>
+                            <ListItem
+                                button
+                                key={group._id}
+                                onClick={() => handleSelectChat('group', group._id)}
+                                className={selectedChat?.id === group._id ? styles.selectedGroup : ''}
+                            >
                                 <ListItemIcon>
                                     <Avatar alt={group.title} src={group.avatar} className={styles.avatar} />
                                 </ListItemIcon>
@@ -97,6 +117,7 @@ const Home: React.FC = () => {
                             </ListItem>
                         ))}
                     </List>
+
                     <Divider className={styles.chatDivider} />
                     <Typography variant="h6" className={styles.sectionTitle}>Members</Typography>
                     <List>
@@ -113,14 +134,13 @@ const Home: React.FC = () => {
                         })}
                     </List>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={9} >
                     <List className={styles.messageArea}>
                         {chatMessages.map((msg: any, index) => (
                             <ListItem key={index}>
                                 <Grid container>
-                                    {/* If the message is not from the current user, show the avatar on the left */}
                                     {msg.username !== user.username && (
-                                        <Grid item xs={1}>
+                                        <Grid item xs={1} className={styles.avatarChat}>
                                             <Avatar alt={msg.username} src={msg.image} />
                                         </Grid>
                                     )}
@@ -133,7 +153,6 @@ const Home: React.FC = () => {
                                         />
                                     </Grid>
 
-                                    {/* If the message is from the current user, show the avatar on the right */}
                                     {msg.username === user.username && (
                                         <Grid item xs={1}>
                                             <Avatar alt={msg.username} src={msg.image} />
@@ -142,11 +161,12 @@ const Home: React.FC = () => {
                                 </Grid>
                             </ListItem>
                         ))}
+                        <div ref={messagesEndRef} />
 
                     </List>
                     <Divider className={styles.chatDivider} />
                     <Grid container className={styles.messageInputContainer}>
-                        <Grid item xs={11}>
+                        <Grid item xs={11} >
                             <TextField
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
