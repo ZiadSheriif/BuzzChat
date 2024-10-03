@@ -13,6 +13,7 @@ import Fab from '@material-ui/core/Fab';
 import SendIcon from '@material-ui/icons/Send';
 import { getGroups } from 'src/services/Chat/groups';
 import { getGroupDetails } from 'src/services/Chat/groups';
+import { createMessage } from 'src/services/Chat/messages';
 import useAPI from 'src/hooks/useAPI.hook';
 import GroupChatForm from 'src/components/Side/GroupChatForm/GroupChatForm';
 import { RootState } from 'src/redux/types';
@@ -22,7 +23,8 @@ import styles from './Home.module.scss';
 const Home: React.FC = () => {
     const { data: groupsData, runQuery: groupsRunQuery } = useAPI();
     const { data: groupDetailsData, runQuery: groupDetailsRunQuery } = useAPI();
-    const username = useSelector((state: RootState) => state.auth.username);
+    const { data: createMessageData, runQuery: createMessageRunQuery } = useAPI();
+    const user = useSelector((state: RootState) => state.auth);
     const [selectedChat, setSelectedChat] = useState<{ type: 'private' | 'group'; id: number } | null>(null);
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState<any[]>([]);
@@ -37,14 +39,27 @@ const Home: React.FC = () => {
     const handleSendMessage = () => {
         if (message.trim() !== '') {
             const newMessage = {
-                username: username, 
+                username: user.username,
                 text: message,
                 date: new Date().toISOString(),
+                image: user.image
             };
             setChatMessages((prevMessages) => [...prevMessages, newMessage]);
             setMessage('');
         }
+        handleCreateMessage(message);
     };
+
+    const handleKeyPress = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            handleSendMessage();
+        }
+    };
+
+    const handleCreateMessage = (message: string) => {
+        createMessageRunQuery(() => createMessage(user.username, user.image, message, selectedChat?.id.toString(), new Date().toISOString()));
+    }
 
     useEffect(() => {
         groupsRunQuery(getGroups);
@@ -85,14 +100,17 @@ const Home: React.FC = () => {
                     <Divider className={styles.chatDivider} />
                     <Typography variant="h6" className={styles.sectionTitle}>Members</Typography>
                     <List>
-                        {groupDetailsData?.group?.members.map((member: any) => (
-                            <ListItem key={member._id}>
-                                <ListItemIcon>
-                                    <Avatar alt={member.username} src={member.image} className={styles.avatar} />
-                                </ListItemIcon>
-                                <ListItemText primary={member.username} />
-                            </ListItem>
-                        ))}
+                        {Array.from(new Set(groupDetailsData?.group?.members.map(m => m.username))).map((username) => {
+                            const member = groupDetailsData.group.members.find(m => m.username === username);
+                            return (
+                                <ListItem key={member._id}>
+                                    <ListItemIcon>
+                                        <Avatar alt={username} src={member.image} className={styles.avatar} />
+                                    </ListItemIcon>
+                                    <ListItemText primary={username} />
+                                </ListItem>
+                            );
+                        })}
                     </List>
                 </Grid>
                 <Grid item xs={9}>
@@ -100,16 +118,31 @@ const Home: React.FC = () => {
                         {chatMessages.map((msg: any, index) => (
                             <ListItem key={index}>
                                 <Grid container>
-                                    <Grid item xs={12}>
+                                    {/* If the message is not from the current user, show the avatar on the left */}
+                                    {msg.username !== user.username && (
+                                        <Grid item xs={1}>
+                                            <Avatar alt={msg.username} src={msg.image} />
+                                        </Grid>
+                                    )}
+
+                                    <Grid item xs={11}>
                                         <ListItemText
                                             primary={msg.text}
                                             secondary={new Date(msg.date).toLocaleTimeString()}
-                                            align={msg.username === username ? 'right' : 'left'}
+                                            align={msg.username === user.username ? 'right' : 'left'}
                                         />
                                     </Grid>
+
+                                    {/* If the message is from the current user, show the avatar on the right */}
+                                    {msg.username === user.username && (
+                                        <Grid item xs={1}>
+                                            <Avatar alt={msg.username} src={msg.image} />
+                                        </Grid>
+                                    )}
                                 </Grid>
                             </ListItem>
                         ))}
+
                     </List>
                     <Divider className={styles.chatDivider} />
                     <Grid container className={styles.messageInputContainer}>
@@ -119,6 +152,7 @@ const Home: React.FC = () => {
                                 onChange={(e) => setMessage(e.target.value)}
                                 label="Type Something"
                                 fullWidth
+                                onKeyPress={handleKeyPress}
                             />
                         </Grid>
                         <Grid item xs={1} align="right">
