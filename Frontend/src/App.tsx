@@ -14,19 +14,15 @@ const App: React.FC = () => {
     <Router>
       <Header />
       <Routes>
-        {/* Authenticated Routes */}
         {isAuthenticated ? (
           <>
             <Route path="/home" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
-            {/* Redirect to home if no route matches */}
             <Route path="*" element={<Navigate to="/home" />} />
           </>
         ) : (
           <>
-            {/* Non-authenticated Route */}
             <Route path="/auth" element={<Auth />} />
-            {/* Redirect to login if not authenticated */}
             <Route path="*" element={<Navigate to="/auth" />} />
           </>
         )}

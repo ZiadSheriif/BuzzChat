@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 const createToken = async (user: any) => {
-    const token = await jwt.sign({ userId: user.id }, 'JWKACEK', { expiresIn: '1h' });
+    const token = await jwt.sign({ userId: user.id }, 'JWKACEK', { expiresIn: '24h' });
 
     return token;
 };
@@ -9,7 +9,6 @@ const createToken = async (user: any) => {
 
 const verifyToken = async (token: any) => {
     const decodedToken = await jwt.verify(token, 'JWKACEK');
-
     return decodedToken;
 }
 
@@ -17,7 +16,7 @@ const verifyToken = async (token: any) => {
 
 const secret = process.env.JWT_SECRET || 'default_secret_key';
 
-const generateToken = (payload: object, expiresIn: string | number = '1h'): string => {
+const generateToken = (payload: object, expiresIn: string | number = '24h'): string => {
     return jwt.sign(payload, secret, { expiresIn });
 };
 

@@ -18,7 +18,11 @@ import useAPI from 'src/hooks/useAPI.hook';
 import GroupChatForm from 'src/components/Side/GroupChatForm/GroupChatForm';
 import { RootState } from 'src/redux/types';
 import { useSelector } from 'react-redux';
+import { io } from 'socket.io-client';
 import styles from './Home.module.scss';
+
+
+const socket = io('http://localhost:4000');
 
 const Home: React.FC = () => {
     const { data: groupsData, runQuery: groupsRunQuery } = useAPI();
@@ -30,12 +34,10 @@ const Home: React.FC = () => {
     const [chatMessages, setChatMessages] = useState<any[]>([]);
 
     const messagesEndRef = useRef<null | HTMLDivElement>(null);
-    let pollingInterval: NodeJS.Timeout;
 
     const handleSelectChat = (type: 'private' | 'group', id: number) => {
         if (type === 'group') {
             groupDetailsRunQuery(() => getGroupDetails(id));
-            startPolling(id);
         }
         setSelectedChat({ type, id });
     };
@@ -49,6 +51,7 @@ const Home: React.FC = () => {
                 image: user.image
             };
             setChatMessages((prevMessages) => [...prevMessages, newMessage]);
+            socket.emit('sendMessage', newMessage);
             setMessage('');
             handleCreateMessage(message);
         }
@@ -76,11 +79,22 @@ const Home: React.FC = () => {
         }
     }, [groupDetailsData]);
 
-    const startPolling = (id: number) => {
-        pollingInterval = setInterval(() => {
-            // groupDetailsRunQuery(() => getGroupDetails(id));
-        }, 3000);
-    };
+    useEffect(() => {
+        const handleReceiveMessage = (data: any) => {
+            setChatMessages((prevMessages) => [...prevMessages, data]);
+            scrollToBottom();
+        };
+
+        socket.on('receiveMessage', handleReceiveMessage);
+
+        return () => {
+            socket.off('receiveMessage', handleReceiveMessage);
+            socket.off('disconnect');
+        };
+    }, []);
+
+
+
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -88,11 +102,6 @@ const Home: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        return () => {
-            clearInterval(pollingInterval); // Clear interval on component unmount or group change
-        };
-    }, [selectedChat]);
 
     useEffect(() => {
         scrollToBottom();
