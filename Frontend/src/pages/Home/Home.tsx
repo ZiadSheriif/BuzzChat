@@ -19,10 +19,11 @@ import GroupChatForm from 'src/components/Side/GroupChatForm/GroupChatForm';
 import { RootState } from 'src/redux/types';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
+import { baseURL } from 'src/api/axios.api';
 import styles from './Home.module.scss';
 
 
-const socket = io('http://localhost:4000');
+const socket = io(baseURL);
 
 const Home: React.FC = () => {
     const { data: groupsData, runQuery: groupsRunQuery } = useAPI();
@@ -32,6 +33,7 @@ const Home: React.FC = () => {
     const [selectedChat, setSelectedChat] = useState<{ type: 'private' | 'group'; id: number } | null>(null);
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState<any[]>([]);
+    const [groupSearch, setGroupSearch] = useState<[]>([]);
 
     const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -50,7 +52,6 @@ const Home: React.FC = () => {
                 date: new Date().toISOString(),
                 image: user.image
             };
-            setChatMessages((prevMessages) => [...prevMessages, newMessage]);
             socket.emit('sendMessage', newMessage);
             setMessage('');
             handleCreateMessage(message);
@@ -65,7 +66,10 @@ const Home: React.FC = () => {
     };
 
     const handleCreateMessage = (message: string) => {
-        createMessageRunQuery(() => createMessage(user.username, user.image, message, selectedChat?.id.toString(), new Date().toISOString()));
+        createMessageRunQuery(() =>
+            createMessage(user.username, user.image, message,
+                selectedChat?.id.toString(),
+                new Date().toISOString()));
     }
 
     useEffect(() => {
@@ -94,8 +98,6 @@ const Home: React.FC = () => {
     }, []);
 
 
-
-
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -108,6 +110,13 @@ const Home: React.FC = () => {
     }, [chatMessages]);
 
 
+    const handleGroupSearch = (e: any) => {
+        setGroupSearch(e.target.value.toLowerCase());
+    };
+
+    const filteredGroups = groupsData?.groups?.filter((group: any) =>
+        group.title.toLowerCase().includes(groupSearch)
+    );
 
     return (
         <div>
@@ -121,12 +130,12 @@ const Home: React.FC = () => {
                     <GroupChatForm />
                     <Divider className={styles.chatDivider} />
                     <Grid item xs={12} className={styles.listContainer}>
-                        <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth />
+                        <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth onChange={(e) => handleGroupSearch(e)} />
                     </Grid>
                     <Divider className={styles.chatDivider} />
                     <Typography variant="h6" className={styles.sectionTitle}>Groups</Typography>
                     <List>
-                        {groupsData?.groups?.map((group: any) => (
+                        {filteredGroups?.map((group: any) => (
                             <ListItem
                                 button
                                 key={group._id}

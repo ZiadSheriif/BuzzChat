@@ -15,12 +15,12 @@ app.use(bodyParser.text({ limit: '200mb' }));
 
 connectDB();
 
-// Socket.io setup
+// Socket.io configuration
 const httpServer = http.createServer(app);
 const corsOptions = { origin: '*', methods: "GET,HEAD,PUT,PATCH,POST,DELETE", optionsSuccessStatus: 200 };
 const io = new Server(httpServer, { cors: corsOptions });
 
-// Routes
+
 const usersRoute = require('./routes/users-route');
 const messagesRoute = require('./routes/messages-route');
 const groupsRoute = require('./routes/groups-route');
@@ -33,7 +33,6 @@ app.get('/', (req: any, res: any) => {
     res.send('Hello World');
 });
 
-// Socket.IO connection handling
 io.on('connection', (socket: any) => {
     console.log('New client connected:', socket.id);
 

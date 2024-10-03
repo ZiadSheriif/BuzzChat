@@ -32,12 +32,10 @@ const Profile: React.FC = () => {
     return (
         <div className={styles.profileContainer}>
             <Grid container spacing={3}>
-                {/* Header */}
                 <Grid item xs={12} className={styles.header}>
-                    <Typography variant="h5">Profile</Typography>
+                    <Typography color="textSecondary" variant="h5">Profile</Typography>
                 </Grid>
 
-                {/* Profile Info Section */}
                 <Grid item xs={12} md={4} className={styles.profileInfo}>
                     <Paper className={styles.paper}>
                         <Grid container direction="column" alignItems="center">
@@ -55,7 +53,6 @@ const Profile: React.FC = () => {
                     </Paper>
                 </Grid>
 
-                {/* Settings Section */}
                 <Grid item xs={12} md={8} className={styles.settingsSection}>
                     <Paper className={styles.paper}>
                         <Typography variant="h6">Edit Profile</Typography>
@@ -109,7 +106,6 @@ const Profile: React.FC = () => {
                     </Paper>
                 </Grid>
 
-                {/* Recent Activity Section */}
                 <Grid item xs={12}>
                     <Paper className={styles.paper}>
                         <Typography variant="h6">Recent Activity</Typography>
