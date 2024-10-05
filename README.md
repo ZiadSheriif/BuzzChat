@@ -2,31 +2,12 @@
 
 BuzzChat is a real-time chat application that enables users to communicate through private and group messages. It is built using MERN technologies with TypeScript and Socket.io.
 
-## Table of Contents
-
-- [BuzzChat](#buzzchat)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Table of Contents](#table-of-contents-1)
-  - [Features](#features-1)
-  - [Installation](#installation)
-    - [Prerequisites](#prerequisites)
-    - [Backend Setup](#backend-setup)
-    - [Frontend Setup](#frontend-setup)
-    - [Usage](#usage)
-    - [Demo](#demo)
-
-## Features
-
-- **Real-time messaging** using Socket.io for
 
 ## Table of Contents
 
 - [BuzzChat](#buzzchat)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
-  - [Table of Contents](#table-of-contents-1)
-  - [Features](#features-1)
   - [Installation](#installation)
     - [Prerequisites](#prerequisites)
     - [Backend Setup](#backend-setup)
@@ -38,11 +19,9 @@ BuzzChat is a real-time chat application that enables users to communicate throu
 
 - **Real-time messaging** using Socket.io for both private and group chats
 - **Private and group chat** functionality with user management
-- **User authentication and authorization** with JWT
+- **User authentication and authorization** with JWT , Redux and Local storage
 - **Profile management** to update user information
 - **Responsive design** for a seamless experience across devices
-- **Smooth scrolling** to the first and last messages in chat
-- **Message notifications** to alert users when new messages arrive
 
 ## Installation
 
