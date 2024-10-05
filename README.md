@@ -1,74 +1,115 @@
-# BuzzChat Backend
+# BuzzChat
 
-This is the backend for the Group Chat application. It is built using Node.js, Express, and MongoDB.
+BuzzChat is a real-time chat application that enables users to communicate through private and group messages. It is built using MERN technologies with TypeScript and Socket.io.
 
-## Prerequisites
+## Table of Contents
 
-Before you begin, ensure you have met the following requirements:
+- [BuzzChat](#buzzchat)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Table of Contents](#table-of-contents-1)
+  - [Features](#features-1)
+  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Backend Setup](#backend-setup)
+    - [Frontend Setup](#frontend-setup)
+    - [Usage](#usage)
+    - [Demo](#demo)
 
-- You have installed Node.js and npm.
-- You have a running instance of MongoDB.
-- You have a `.env` file with the necessary environment variables.
+## Features
+
+- **Real-time messaging** using Socket.io for
+
+## Table of Contents
+
+- [BuzzChat](#buzzchat)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Table of Contents](#table-of-contents-1)
+  - [Features](#features-1)
+  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Backend Setup](#backend-setup)
+    - [Frontend Setup](#frontend-setup)
+    - [Usage](#usage)
+    - [Demo](#demo)
+
+## Features
+
+- **Real-time messaging** using Socket.io for both private and group chats
+- **Private and group chat** functionality with user management
+- **User authentication and authorization** with JWT
+- **Profile management** to update user information
+- **Responsive design** for a seamless experience across devices
+- **Smooth scrolling** to the first and last messages in chat
+- **Message notifications** to alert users when new messages arrive
 
 ## Installation
 
+### Prerequisites
+
+- Node.js 
+- npm or yarn
+- MongoDB
+
+### Backend Setup
+
 1. Clone the repository:
 
-    ```sh
-    git clone https://github.com/your-username/group-chat-backend.git
-    cd group-chat-backend
-    ```
+   ```sh
+   git clone https://github.com/yourusername/buzzchat.git
+   cd buzzchat/backend
+   ```
 
-2. Install the dependencies:
+2. Install dependencies:
 
     ```sh
     npm install
     ```
 
-3. Create a `.env` file in the root of the project and add the following environment variables:
 
-    ```properties
-    # .env
-    DB_URL=mongodb://localhost:27017/your-database-name
-    PORT=4000
+3. Create a .env file in the backend folder with the following variables:
+
+    ```sh
+    MONGO_URI=your_mongodb_uri
+    JWT_SECRET=your_jwt_secret
     ```
 
-## Running the Server
-
-To start the server in development mode with automatic restarts on file changes, use `nodemon`:
-
-```sh
-npm start
-```
-
-## Project Structure
-```
-BuzzChat-Backend/
-├── src/
-│   ├── controllers/
-│   │   └── users-controllers.ts
-│   ├── models/
-│   │   └── user.ts
-│   ├── routes/
-│   │   └── users-route.ts
-│   ├── utils/
-│   │   └── db-config.ts
-│   └── app.ts
-├── .env
-├── nodemon.json
-├── package.json
-└── README.md
-```
+4. Start the backend server:
+   
+    ```sh
+    npm start
+    ```
 
 
+### Frontend Setup
+1. Navigate to the frontend folder:
 
-### Explanation
-1. **Prerequisites**: Lists the requirements to run the project.
-2. **Installation**: Provides step-by-step instructions to set up the project.
-3. **Running the Server**: Explains how to start the server using `nodemon`.
-4. **Project Structure**: Gives an overview of the project directory structure.
-5. **API Endpoints**: Documents the available API endpoints.
-6. **Contributing**: Provides guidelines for contributing to the project.
-7. **License**: Mentions the project's license.
+    ```sh
+    cd ../frontend
+    ```
+    
+2. Install dependencies:
+   
+    ```sh
+    npm install
+    ```
 
-Feel free to customize this `README.md` file according to your project's specific needs.
+3. Start the frontend development server:
+
+    ```sh
+    npm run dev
+    ```
+
+4. Open the browser at http://localhost:3000 to access the app.
+
+
+
+### Usage
+- Users can register and log in to BuzzChat.
+- After authentication, users can create group chats or engage in direct messaging.
+- The app provides real-time chat features through WebSockets.
+- Users can manage their profiles and view all their chats.
+
+### Demo
+Check out a demo video of BuzzChat in action: [Demo Video](https://drive.google.com/file/d/1Es19Tz3tkwbEigVcnSaajd6YbBpJGuDr/view?usp=sharing)

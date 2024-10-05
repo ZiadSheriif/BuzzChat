@@ -12,6 +12,11 @@
         position: relative;
         text-shadow: 2px 2px 4px #000000;
        font-style: italic;
+       
+       @media (max-width: 850px) {
+        font-size: 1.2rem;
+        left: 0;
+       }
     }
 
     nav button {
